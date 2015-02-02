@@ -149,7 +149,6 @@ GPU = {
             {
                 x = 0;
                 lineoffs = (lineoffs + 1) & 31;
-                console.log(GPU.vram);
                 tile = GPU.vram[mapoffs + lineoffs];
                 if(GPU.bgtile == 1 && tile < 128) tile += 256;
             }
