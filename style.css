@@ -1,0 +1,12 @@
+body {
+    padding: 10px;
+}
+
+#screen {
+    display: block-inline;
+}
+
+#run, #reset {
+    display: block-inline;
+    margin-bottom: 10px;
+}
