@@ -20,66 +20,67 @@ Z80 = {
         Z80.stop = 0;
     },
     ops: {
+        // Do nothing
         NOP: function() {
-            Z80.reg.m = 1; 
+            Z80.reg.m = 1;
         },
         // 8-bit loads
         // LD r,n: load 8-bit value n into register r.
         LDrn: function(reg) {
             Z80.reg[reg] = MMU.rb(Z80.reg.pc++);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LD r1,r2: copy register r2 ito register r1.
         LDrr: function(r1, r2) {
             Z80.reg[r1] = Z80.reg[r2];
-            Z80.reg.m = 1; 
+            Z80.reg.m = 1;
         },
         // LD r,(HL): load byte at address (HL) into register r.
         LDrHL: function(reg) {
             Z80.reg[reg] = MMU.rb((Z80.reg.h << 8) + Z80.reg.l);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LD (HL),r: load register r into byte at address (HL).
         LDHLr: function(reg) {
             MMU.wb((Z80.reg.h << 8) + Z80.reg.l, Z80.reg[reg]);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LD (HL),n: load 8-bit value n into byte at address (HL).
         LDHLn: function() {
             MMU.wb((Z80.reg.h << 8) + Z80.reg.l, MMU.rb(Z80.reg.pc++));
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
         // LD A,rr: load address denoted by two registers into A.
         LDArr: function(r1, r2) {
             Z80.reg.a = MMU.rb((Z80.reg[r1] << 8) + Z80.reg[r2]);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LD A,nn: load address denoted by 16-bit immediate into A.
         LDAnn: function() {
             Z80.reg.a = MMU.rb(MMU.rw(Z80.reg.pc++));
             Z80.reg.pc++;
-            Z80.reg.m = 4; 
+            Z80.reg.m = 4;
         },
         // LD rr,A: copy A to address denoted by two registers.
         LDrrA: function(r1, r2) {
             MMU.wb((Z80.reg[r1] << 8) + Z80.reg[r2], Z80.reg.a);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LD nn,A: copy A to address denoted by 16-bit immediate.
         LDnnA: function() {
             MMU.wb(MMU.rw(Z80.reg.pc++), Z80.reg.a);
             Z80.reg.pc++;
-            Z80.reg.m = 4; 
+            Z80.reg.m = 4;
         },
         // LD A,(C): load byte at address (0xFF00 + C) into A.
         LDACa: function() {
             Z80.reg.a = MMU.rb(0xFF00 + Z80.reg.c);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LD (C),A: copy A into address (0xFF00 + C).
         LDCaA: function() {
             MMU.wb(0xFF00 + Z80.reg.c, Z80.reg.a);
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LDD A,(HL): load byte at address (HL) into A. Decrement HL.
         LDDAHL: function() {
@@ -88,7 +89,7 @@ Z80 = {
             if (Z80.reg.l == 255) {
                 Z80.reg.h = (Z80.reg.h-1)&255;
             }
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LDD (HL),A: copy A into byte at address (HL). Decrement HL.
         LDDHLA: function() {
@@ -97,7 +98,7 @@ Z80 = {
             if (Z80.reg.l == 255) {
                 Z80.reg.h = (Z80.reg.h-1)&255;
             }
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LDI A,(HL): load byte at address (HL) into A. Increment HL.
         LDIAHL: function() {
@@ -105,7 +106,7 @@ Z80 = {
             Z80.reg.l = (Z80.reg.l+1)&255;
             if (!(Z80.reg.l))
                 Z80.reg.h = (Z80.reg.h+1)&255;
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LDI (HL),A: copy A into byte at address (HL). Increment HL.
         LDIHLA: function() {
@@ -113,17 +114,17 @@ Z80 = {
             Z80.reg.l = (Z80.reg.l+1)&255;
             if (!(Z80.reg.l))
                 Z80.reg.h = (Z80.reg.h+1)&255;
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LDH (n),A: copy A into byte at address (0xFF00+n), where n is an 8-bit immediate value.
         LDHnA: function() {
             MMU.wb(0xFF00+MMU.rb(Z80.reg.pc++), Z80.reg.a);
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
         // LDH A,(n): load byte at address (0xFF00+n) into A, where n is an 8-bit immediate value.
         LDHAn: function() {
             Z80.reg.a = MMU.rb(0xFF00+MMU.rb(Z80.reg.pc++));
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
 
         // 16-bit loads
@@ -131,18 +132,18 @@ Z80 = {
         LDrrnn: function(r1, r2) {
             Z80.reg[r2] = MMU.rb(Z80.reg.pc++);
             Z80.reg[r1] = MMU.rb(Z80.reg.pc++);
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
         // LD SP,nn: load 16-bit immediate n into the stack pointer.
         LDSPnn: function() {
             Z80.reg.sp = MMU.rw(Z80.reg.pc);
             Z80.reg.pc += 2;
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
         // LD SP,HL: copy HL into the stack pointer.
         LDSPHL: function() {
             Z80.reg.sp = (Z80.reg.h << 8) + Z80.reg.l;
-            Z80.reg.m = 2; 
+            Z80.reg.m = 2;
         },
         // LDHL SP,n: put SP + n into HL, where n is an 8-bit signed immediate.
         LDHLSPn: function() {
@@ -151,25 +152,25 @@ Z80 = {
             i += Z80.reg.sp;
             Z80.reg.h = (i>>8)&255;
             Z80.reg.l = i&255;
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
         // LD (nn),SP: put SP at address denoted by 16-bit immediate nn.
         LDnnSP: function() {
             MMU.ww(MMU.rw(Z80.reg.pc), Z80.reg.sp);
             Z80.reg.pc += 2;
-            Z80.reg.m = 5; 
+            Z80.reg.m = 5;
         },
         // PUSH rr: push register pair rr onto stack.
         PUSHrr: function(r1, r2) {
             MMU.wb(--Z80.reg.sp, r1);
             MMU.wb(--Z80.reg.sp, r2);
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
         // POP rr: pop register pair rr from stack.
         POPrr: function(r1, r2) {
             Z80.reg[r2] = MMU.rb(Z80.reg.sp++);
             Z80.reg[r1] = MMU.rb(Z80.reg.sp++);
-            Z80.reg.m = 3; 
+            Z80.reg.m = 3;
         },
 
         // 8-bit ALU
@@ -1122,7 +1123,7 @@ Z80.map = [
     function(){Z80.ops.LDrr('e','l');}, // LD E,L
     function(){Z80.ops.LDrHL('e');}, // LD E,(HL)
     function(){Z80.ops.LDrr('e','a');}, // LD E,A
-    
+
     // 0x60
     function(){Z80.ops.LDrr('h','b');}, // LD H,B
     function(){Z80.ops.LDrr('h','c');}, // LD H,C
@@ -1158,7 +1159,7 @@ Z80.map = [
     function(){Z80.ops.LDrr('a','l');}, // LD A,L
     function(){Z80.ops.LDrHL('a');}, // LD A,(HL)
     function(){Z80.ops.LDrr('a','a');}, // LD A,A (nop)
-    
+
     // 0x80
     function(){Z80.ops.ADDAr('b');}, // ADD A,B
     function(){Z80.ops.ADDAr('c');}, // ADD A,C
@@ -1322,7 +1323,7 @@ Z80.cbmap = [
     function(){Z80.ops.RRCr('l');}, // RRC L
     Z80.ops.RRCHL, // RRC (HL)
     function(){Z80.ops.RRCr('a');}, // RRC A
-    
+
     // 0xCB10
     function(){Z80.ops.RLr('b');}, // RL B
     function(){Z80.ops.RLr('c');}, // RL C
@@ -1340,7 +1341,7 @@ Z80.cbmap = [
     function(){Z80.ops.RRr('l');}, // RR L
     Z80.ops.RRHL, // RR (HL)
     function(){Z80.ops.RRr('a');}, // RR A
-    
+
     // 0xCB20
     function(){Z80.ops.SLAr('b');}, // SLA B
     function(){Z80.ops.SLAr('c');}, // SLA C
@@ -1376,7 +1377,7 @@ Z80.cbmap = [
     function(){Z80.ops.SRLr('l');}, // SRL L
     Z80.ops.SRLHL, // SRL (HL)
     function(){Z80.ops.SRLr('a');}, // SRL A
-    
+
     // 0xCB40
     function(){Z80.ops.BITnr(0,'b');}, // BIT 0,B
     function(){Z80.ops.BITnr(0,'c');}, // BIT 0,C
@@ -1394,7 +1395,7 @@ Z80.cbmap = [
     function(){Z80.ops.BITnr(1,'l');}, // BIT 1,L
     function(){Z80.ops.BITnHL(1);}, // BIT 1,(HL)
     function(){Z80.ops.BITnr(1,'a');}, // BIT 1,A
-    
+
     // 0xCB50
     function(){Z80.ops.BITnr(2,'b');}, // BIT 2,B
     function(){Z80.ops.BITnr(2,'c');}, // BIT 2,C
@@ -1430,7 +1431,7 @@ Z80.cbmap = [
     function(){Z80.ops.BITnr(5,'l');}, // BIT 5,L
     function(){Z80.ops.BITnHL(5);}, // BIT 5,(HL)
     function(){Z80.ops.BITnr(5,'a');}, // BIT 5,A
-    
+
     // 0xCB70
     function(){Z80.ops.BITnr(6,'b');}, // BIT 6,B
     function(){Z80.ops.BITnr(6,'c');}, // BIT 6,C
@@ -1448,7 +1449,7 @@ Z80.cbmap = [
     function(){Z80.ops.BITnr(7,'l');}, // BIT 7,L
     function(){Z80.ops.BITnHL(7);}, // BIT 7,(HL)
     function(){Z80.ops.BITnr(7,'a');}, // BIT 7,A
-    
+
     // 0xCB80
     function(){Z80.ops.RESnr(0,'b');}, // RES 0,B
     function(){Z80.ops.RESnr(0,'c');}, // RES 0,C
@@ -1466,7 +1467,7 @@ Z80.cbmap = [
     function(){Z80.ops.RESnr(1,'l');}, // RES 1,L
     function(){Z80.ops.RESnHL(1);}, // RES 1,(HL)
     function(){Z80.ops.RESnr(1,'a');}, // RES 1,A
-    
+
     // 0xCB90
     function(){Z80.ops.RESnr(2,'b');}, // RES 2,B
     function(){Z80.ops.RESnr(2,'c');}, // RES 2,C
@@ -1484,7 +1485,7 @@ Z80.cbmap = [
     function(){Z80.ops.RESnr(3,'l');}, // RES 3,L
     function(){Z80.ops.RESnHL(3);}, // RES 3,(HL)
     function(){Z80.ops.RESnr(3,'a');}, // RES 3,A
-    
+
     // 0xCBA0
     function(){Z80.ops.RESnr(4,'b');}, // RES 4,B
     function(){Z80.ops.RESnr(4,'c');}, // RES 4,C
@@ -1502,7 +1503,7 @@ Z80.cbmap = [
     function(){Z80.ops.RESnr(5,'l');}, // RES 5,L
     function(){Z80.ops.RESnHL(5);}, // RES 5,(HL)
     function(){Z80.ops.RESnr(5,'a');}, // RES 5,A
-    
+
     // CBB0
     function(){Z80.ops.RESnr(6,'b');}, // RES 6,B
     function(){Z80.ops.RESnr(6,'c');}, // RES 6,C
@@ -1538,7 +1539,7 @@ Z80.cbmap = [
     function(){Z80.ops.SETnr(1,'l');}, // SET 1,L
     function(){Z80.ops.SETnHL(1);}, // SET 1,(HL)
     function(){Z80.ops.SETnr(1,'a');}, // SET 1,A
-    
+
     // 0xCBD0
     function(){Z80.ops.SETnr(2,'b');}, // SET 2,B
     function(){Z80.ops.SETnr(2,'c');}, // SET 2,C
@@ -1556,7 +1557,7 @@ Z80.cbmap = [
     function(){Z80.ops.SETnr(3,'l');}, // SET 3,L
     function(){Z80.ops.SETnHL(3);}, // SET 3,(HL)
     function(){Z80.ops.SETnr(3,'a');}, // SET 3,A
-    
+
     // 0xCBE0
     function(){Z80.ops.SETnr(4,'b');}, // SET 4,B
     function(){Z80.ops.SETnr(4,'c');}, // SET 4,C
@@ -1574,7 +1575,7 @@ Z80.cbmap = [
     function(){Z80.ops.SETnr(5,'l');}, // SET 5,L
     function(){Z80.ops.SETnHL(5);}, // SET 5,(HL)
     function(){Z80.ops.SETnr(5,'a');}, // SET 5,A
-    
+
     // 0xCBF0
     function(){Z80.ops.SETnr(6,'b');}, // SET 6,B
     function(){Z80.ops.SETnr(6,'c');}, // SET 6,C
