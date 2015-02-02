@@ -31,8 +31,7 @@ GB = {
     }
 };
 
-window.onload = function()
-{
+window.onload = function() {
     document.getElementById('reset').onclick = GB.reset;
     document.getElementById('run').onclick = GB.run;
     GB.reset();
